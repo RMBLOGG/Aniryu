@@ -5,55 +5,50 @@
 <style>
 /* ── Donasi Page ─────────────────────────────────────────────── */
 .donasi-wrap {
-  max-width: 760px;
-  margin: 2rem auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
 }
 
-/* Hero card */
+/* Hero — full bleed banner */
 .donasi-hero {
-  background: linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 50%, #1a0a0a 100%);
-  border: 1px solid rgba(229,57,53,0.25);
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0505 100%);
+  margin: 0 -1rem 2.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
-.donasi-hero::before {
+.donasi-hero::after {
   content: '';
   position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 50% 50%, rgba(229,57,53,0.08) 0%, transparent 60%);
-  pointer-events: none;
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
 }
 .donasi-hero h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 900;
   color: #fff;
   margin-bottom: 0.5rem;
 }
 .donasi-hero h1 span { color: var(--accent2); }
 .donasi-hero p {
-  color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
-  max-width: 480px;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.88rem;
+  max-width: 420px;
   margin: 0 auto 1.5rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 .donasi-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   background: var(--accent);
   color: #fff;
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.75rem 1.75rem;
+  font-size: 0.9rem;
+  padding: 0.7rem 1.6rem;
   border-radius: 50px;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
@@ -65,14 +60,18 @@
   box-shadow: 0 6px 24px rgba(229,57,53,0.5);
 }
 
-/* Section card */
-.donasi-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.5rem;
+/* Section — no card, just divider */
+.donasi-section {
+  padding: 0 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
 }
-.donasi-card-title {
+.donasi-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.section-title {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 1rem;
@@ -82,18 +81,39 @@
   align-items: center;
   gap: 0.5rem;
 }
-.donasi-card-title i { color: var(--accent); }
+.section-title i { color: var(--accent); font-size: 0.9rem; }
+
+/* Live badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #4caf50;
+  background: rgba(76,175,80,0.1);
+  border: 1px solid rgba(76,175,80,0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  margin-left: auto;
+}
+.live-dot {
+  width: 5px; height: 5px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse-dot 1.2s infinite;
+}
 
 /* Target progress */
 .target-judul {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--muted);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 .progress-wrap {
   background: var(--border);
   border-radius: 50px;
-  height: 14px;
+  height: 10px;
   overflow: hidden;
   margin-bottom: 0.75rem;
 }
@@ -101,143 +121,111 @@
   height: 100%;
   border-radius: 50px;
   background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
-  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
   width: 0%;
   position: relative;
 }
 .progress-bar::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
   animation: shimmer 2s infinite;
 }
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
+  0%   { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
 .progress-stats {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.83rem;
+  font-size: 0.82rem;
+  gap: 0.5rem;
 }
-.progress-terkumpul { font-weight: 800; color: var(--accent2); font-size: 1rem; }
-.progress-target { color: var(--muted); }
+.progress-terkumpul { font-weight: 800; color: var(--accent2); font-size: 0.95rem; }
+.progress-target { color: var(--muted); flex: 1; }
 .progress-persen {
-  background: rgba(229,57,53,0.12);
+  background: rgba(229,57,53,0.1);
   color: var(--accent);
-  padding: 0.2rem 0.6rem;
+  padding: 0.18rem 0.55rem;
   border-radius: 50px;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 /* Leaderboard */
-.lb-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.lb-list { display: flex; flex-direction: column; gap: 0; }
 .lb-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.7rem 1rem;
-  border-radius: 10px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  transition: border-color 0.2s, transform 0.15s;
-  animation: fadeSlide 0.4s ease both;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left 0.15s;
+  animation: fadeSlide 0.35s ease both;
 }
-.lb-item:hover { border-color: var(--accent); transform: translateX(3px); }
+.lb-item:last-child { border-bottom: none; }
+.lb-item:hover { padding-left: 4px; }
 @keyframes fadeSlide {
-  from { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 0; transform: translateX(-10px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 .lb-rank {
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
-  font-size: 0.95rem;
-  min-width: 28px;
+  font-size: 1rem;
+  min-width: 30px;
   text-align: center;
 }
 .lb-rank.gold   { color: #f5c518; }
 .lb-rank.silver { color: #a8b8c8; }
 .lb-rank.bronze { color: #cd7f32; }
-.lb-rank.other  { color: var(--muted); }
-.lb-medal { font-size: 1.1rem; }
+.lb-rank.other  { color: var(--muted); font-size: 0.82rem; }
 .lb-name { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--text); }
-.lb-amount {
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: var(--accent2);
-  white-space: nowrap;
-}
+.lb-amount { font-weight: 800; font-size: 0.85rem; color: var(--accent2); white-space: nowrap; }
 .lb-empty {
   text-align: center;
   color: var(--muted);
   padding: 2rem 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
-.lb-empty i { font-size: 2rem; display: block; margin-bottom: 0.5rem; opacity: 0.4; }
+.lb-empty i { font-size: 1.8rem; display: block; margin-bottom: 0.5rem; opacity: 0.35; }
 
-/* Recent feed */
-.feed-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; }
+/* Feed */
+.feed-list { display: flex; flex-direction: column; gap: 0; }
 .feed-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  font-size: 0.83rem;
+  gap: 0.65rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
 }
-.feed-item.new-ping {
-  animation: newPing 0.6s ease;
-}
+.feed-item:last-child { border-bottom: none; }
+.feed-item.new-ping { animation: newPing 0.7s ease; }
 @keyframes newPing {
-  0%   { border-color: var(--accent2); background: rgba(255,107,107,0.1); }
-  100% { border-color: var(--border); background: var(--bg); }
+  0%   { background: rgba(255,107,107,0.08); }
+  100% { background: transparent; }
 }
-.feed-icon { color: var(--accent2); font-size: 0.85rem; margin-top: 2px; }
+.feed-icon { color: var(--accent2); font-size: 0.8rem; margin-top: 3px; flex-shrink: 0; }
 .feed-name { font-weight: 700; color: var(--text); }
 .feed-amount { color: var(--accent); font-weight: 700; }
-.feed-pesan { color: var(--muted); font-style: italic; margin-top: 1px; }
+.feed-pesan { color: var(--muted); font-style: italic; font-size: 0.8rem; margin-top: 2px; }
 
-/* Live badge */
-.live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #4caf50;
-  background: rgba(76,175,80,0.12);
-  border: 1px solid rgba(76,175,80,0.3);
-  padding: 0.15rem 0.5rem;
-  border-radius: 50px;
-  margin-left: auto;
-}
-.live-dot {
-  width: 6px; height: 6px;
-  background: #4caf50;
-  border-radius: 50%;
-  animation: pulse-dot 1.2s infinite;
-}
-
-/* Loading skeleton */
+/* Skeleton */
 .skel {
   background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
   background-size: 200% 100%;
   animation: skel-anim 1.2s infinite;
-  border-radius: 6px;
-  height: 14px;
+  border-radius: 4px;
+  height: 13px;
+  display: inline-block;
 }
 @keyframes skel-anim {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
-html.dark .donasi-card { background: #1a1a1a; }
-html.dark .lb-item, html.dark .feed-item { background: #111; }
 </style>
 {% endblock %}
 
@@ -248,15 +236,15 @@ html.dark .lb-item, html.dark .feed-item { background: #111; }
   <div class="donasi-hero">
     <h1>💖 Dukung <span>Aniryu</span></h1>
     <p>Aniryu gratis selamanya. Tapi server butuh bayaran 😅<br>
-       Setiap donasi sekecil apapun sangat berarti buat kita!</p>
+       Setiap donasi sekecil apapun sangat berarti!</p>
     <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-btn">
       <i class="fa fa-heart"></i> Donasi via Saweria
     </a>
   </div>
 
-  <!-- Target Progress -->
-  <div class="donasi-card">
-    <div class="donasi-card-title">
+  <!-- Target -->
+  <div class="donasi-section">
+    <div class="section-title">
       <i class="fa fa-bullseye"></i>
       Target Donasi
       <span class="live-badge" id="liveBadge" style="display:none">
@@ -264,7 +252,7 @@ html.dark .lb-item, html.dark .feed-item { background: #111; }
       </span>
     </div>
     <div class="target-judul" id="targetJudul">
-      <span class="skel" style="width:60%;display:block"></span>
+      <span class="skel" style="width:55%"></span>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar" id="progressBar"></div>
@@ -277,24 +265,23 @@ html.dark .lb-item, html.dark .feed-item { background: #111; }
   </div>
 
   <!-- Leaderboard -->
-  <div class="donasi-card">
-    <div class="donasi-card-title">
+  <div class="donasi-section">
+    <div class="section-title">
       <i class="fa fa-trophy"></i>
       Top Donatur
     </div>
     <div class="lb-list" id="leaderboardList">
-      <!-- skeleton -->
-      <div class="lb-item" style="opacity:0.5">
+      <div class="lb-item" style="opacity:0.4">
         <span class="lb-rank gold">🥇</span>
-        <span class="lb-name"><span class="skel" style="width:120px;display:inline-block"></span></span>
-        <span class="lb-amount"><span class="skel" style="width:70px;display:inline-block"></span></span>
+        <span class="lb-name"><span class="skel" style="width:130px"></span></span>
+        <span class="lb-amount"><span class="skel" style="width:65px"></span></span>
       </div>
     </div>
   </div>
 
-  <!-- Feed donasi terbaru -->
-  <div class="donasi-card">
-    <div class="donasi-card-title">
+  <!-- Feed -->
+  <div class="donasi-section">
+    <div class="section-title">
       <i class="fa fa-clock-rotate-left"></i>
       Donasi Terbaru
     </div>
@@ -314,54 +301,44 @@ html.dark .lb-item, html.dark .feed-item { background: #111; }
 (function() {
   const fmt = n => "Rp " + Number(n).toLocaleString("id-ID");
   const medals = ["🥇","🥈","🥉"];
-  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "other";
+  const rankClass = i => i===0?"gold":i===1?"silver":i===2?"bronze":"other";
 
-  // ── Load target ─────────────────────────────────────────────
   async function loadTarget() {
     try {
-      const r = await fetch("/api/donasi/target");
-      const d = await r.json();
+      const d = await fetch("/api/donasi/target").then(r=>r.json());
       document.getElementById("targetJudul").textContent = d.judul || "Target Donasi";
-      document.getElementById("terkumpul").textContent = fmt(d.terkumpul || 0);
-      document.getElementById("targetAmount").textContent = "dari " + fmt(d.target || 0);
-      document.getElementById("persenBadge").textContent = (d.persen || 0) + "%";
-      // delay sedikit biar animasi progress bar keliatan
-      setTimeout(() => {
-        document.getElementById("progressBar").style.width = (d.persen || 0) + "%";
-      }, 200);
+      document.getElementById("terkumpul").textContent = fmt(d.terkumpul||0);
+      document.getElementById("targetAmount").textContent = "dari " + fmt(d.target||0);
+      document.getElementById("persenBadge").textContent = (d.persen||0) + "%";
+      setTimeout(() => { document.getElementById("progressBar").style.width = (d.persen||0)+"%"; }, 150);
     } catch(e) {
-      document.getElementById("targetJudul").textContent = "Gagal memuat target";
+      document.getElementById("targetJudul").textContent = "Gagal memuat";
     }
   }
 
-  // ── Load leaderboard ────────────────────────────────────────
   async function loadLeaderboard() {
     try {
-      const r = await fetch("/api/donasi/leaderboard");
-      const data = await r.json();
+      const data = await fetch("/api/donasi/leaderboard").then(r=>r.json());
       const el = document.getElementById("leaderboardList");
       if (!data.length) {
-        el.innerHTML = '<div class="lb-empty"><i class="fa fa-heart-crack"></i>Belum ada donatur nih. Jadilah yang pertama!</div>';
+        el.innerHTML = '<div class="lb-empty"><i class="fa fa-heart-crack"></i>Belum ada donatur. Jadilah yang pertama!</div>';
         return;
       }
-      el.innerHTML = data.map((d, i) => `
-        <div class="lb-item" style="animation-delay:${i * 0.06}s">
-          <span class="lb-rank ${rankClass(i)}">${medals[i] || "#" + (i+1)}</span>
-          <span class="lb-name">${escHtml(d.donatur)}</span>
+      el.innerHTML = data.map((d,i) => `
+        <div class="lb-item" style="animation-delay:${i*0.05}s">
+          <span class="lb-rank ${rankClass(i)}">${medals[i]||"#"+(i+1)}</span>
+          <span class="lb-name">${esc(d.donatur)}</span>
           <span class="lb-amount">${fmt(d.total)}</span>
-        </div>
-      `).join("");
+        </div>`).join("");
     } catch(e) {
       document.getElementById("leaderboardList").innerHTML =
-        '<div class="lb-empty"><i class="fa fa-circle-exclamation"></i>Gagal memuat leaderboard</div>';
+        '<div class="lb-empty"><i class="fa fa-circle-exclamation"></i>Gagal memuat</div>';
     }
   }
 
-  // ── Load recent feed ────────────────────────────────────────
   async function loadRecent() {
     try {
-      const r = await fetch("/api/donasi/recent");
-      const data = await r.json();
+      const data = await fetch("/api/donasi/recent").then(r=>r.json());
       renderFeed(data);
     } catch(e) {}
   }
@@ -372,77 +349,57 @@ html.dark .lb-item, html.dark .feed-item { background: #111; }
       el.innerHTML = '<div class="lb-empty"><i class="fa fa-inbox"></i>Belum ada donasi</div>';
       return;
     }
-    el.innerHTML = data.map(d => `
-      <div class="feed-item">
-        <span class="feed-icon"><i class="fa fa-heart"></i></span>
-        <div>
-          <div><span class="feed-name">${escHtml(d.donatur)}</span>
-          &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
-          ${d.pesan ? `<div class="feed-pesan">"${escHtml(d.pesan)}"</div>` : ""}
-        </div>
+    el.innerHTML = data.map(d => feedHtml(d)).join("");
+  }
+
+  function feedHtml(d) {
+    return `<div class="feed-item">
+      <span class="feed-icon"><i class="fa fa-heart"></i></span>
+      <div>
+        <div><span class="feed-name">${esc(d.donatur)}</span> &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
+        ${d.pesan?`<div class="feed-pesan">"${esc(d.pesan)}"</div>`:""}
       </div>
-    `).join("");
+    </div>`;
   }
 
   function prependFeed(d) {
     const el = document.getElementById("feedList");
-    // Hapus "belum ada donasi" jika ada
     const empty = el.querySelector(".lb-empty");
     if (empty) empty.remove();
-
     const item = document.createElement("div");
     item.className = "feed-item new-ping";
     item.innerHTML = `
       <span class="feed-icon"><i class="fa fa-heart"></i></span>
       <div>
-        <div><span class="feed-name">${escHtml(d.donatur)}</span>
-        &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
-        ${d.pesan ? `<div class="feed-pesan">"${escHtml(d.pesan)}"</div>` : ""}
-      </div>
-    `;
+        <div><span class="feed-name">${esc(d.donatur)}</span> &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
+        ${d.pesan?`<div class="feed-pesan">"${esc(d.pesan)}"</div>`:""}
+      </div>`;
     el.insertBefore(item, el.firstChild);
-    // Batasi 5 item
     while (el.children.length > 5) el.removeChild(el.lastChild);
   }
 
-  // ── SSE real-time ───────────────────────────────────────────
   function connectSSE() {
-    if (!window.EventSource) return; // fallback: polling
+    if (!window.EventSource) return;
     const es = new EventSource("/api/donasi/stream");
-    es.onopen = () => {
-      document.getElementById("liveBadge").style.display = "inline-flex";
-    };
+    es.onopen = () => { document.getElementById("liveBadge").style.display = "inline-flex"; };
     es.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data);
-        if (data.event === "donasi_baru") {
-          prependFeed(data);
-          loadLeaderboard();
-          loadTarget();
-        }
+        if (data.event === "donasi_baru") { prependFeed(data); loadLeaderboard(); loadTarget(); }
       } catch(_) {}
     };
     es.onerror = () => {
       document.getElementById("liveBadge").style.display = "none";
       es.close();
-      // reconnect 5 detik
       setTimeout(connectSSE, 5000);
     };
   }
 
-  function escHtml(s) {
-    return String(s)
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;");
+  function esc(s) {
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  // ── Init ────────────────────────────────────────────────────
-  loadTarget();
-  loadLeaderboard();
-  loadRecent();
-  connectSSE();
+  loadTarget(); loadLeaderboard(); loadRecent(); connectSSE();
 })();
 </script>
 {% endblock %}
