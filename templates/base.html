@@ -41,6 +41,10 @@
       <i class="fas fa-bookmark"></i> Bookmark
     </a>
     <div class="sidebar-divider"></div>
+    <a href="/donasi" class="sidebar-nav-item {% if request.path=='/donasi' %}active{% endif %}" style="color:var(--accent2)">
+      <i class="fa fa-heart"></i> Donasi
+    </a>
+    <div class="sidebar-divider"></div>
     <a href="/faq" class="sidebar-nav-item {% if request.path=='/faq' %}active{% endif %}">
       <i class="fas fa-circle-question"></i> FAQ
     </a>
@@ -68,6 +72,7 @@
       <a href="/completed" class="nav-link {% if request.path=='/completed' %}active{% endif %}">Completed</a>
       <a href="/schedule" class="nav-link {% if request.path=='/schedule' %}active{% endif %}">Jadwal</a>
       <a href="/genre" class="nav-link {% if request.path=='/genre' %}active{% endif %}">Genre</a>
+      <a href="/donasi" class="nav-link {% if request.path=='/donasi' %}active{% endif %}" style="color:var(--accent2)"><i class="fa fa-heart"></i> Donasi</a>
     </div>
     <div class="nav-right">
       <a href="/bookmark" class="nav-icon-btn" title="Bookmark"><i class="fas fa-bookmark"></i></a>

@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% block title %}Donasi — Aniryu{% endblock %}
+
+{% block head %}
+<style>
+/* ── Donasi Page ─────────────────────────────────────────────── */
+.donasi-wrap {
+  max-width: 760px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Hero card */
+.donasi-hero {
+  background: linear-gradient(135deg, #1a0a0a 0%, #2d0a0a 50%, #1a0a0a 100%);
+  border: 1px solid rgba(229,57,53,0.25);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.donasi-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(229,57,53,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.donasi-hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.donasi-hero h1 span { color: var(--accent2); }
+.donasi-hero p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+.donasi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 4px 20px rgba(229,57,53,0.4);
+}
+.donasi-btn:hover {
+  background: var(--accent2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(229,57,53,0.5);
+}
+
+/* Section card */
+.donasi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+.donasi-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.donasi-card-title i { color: var(--accent); }
+
+/* Target progress */
+.target-judul {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.progress-wrap {
+  background: var(--border);
+  border-radius: 50px;
+  height: 14px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+  position: relative;
+}
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 2s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.83rem;
+}
+.progress-terkumpul { font-weight: 800; color: var(--accent2); font-size: 1rem; }
+.progress-target { color: var(--muted); }
+.progress-persen {
+  background: rgba(229,57,53,0.12);
+  color: var(--accent);
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+/* Leaderboard */
+.lb-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.lb-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, transform 0.15s;
+  animation: fadeSlide 0.4s ease both;
+}
+.lb-item:hover { border-color: var(--accent); transform: translateX(3px); }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.lb-rank {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  min-width: 28px;
+  text-align: center;
+}
+.lb-rank.gold   { color: #f5c518; }
+.lb-rank.silver { color: #a8b8c8; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-rank.other  { color: var(--muted); }
+.lb-medal { font-size: 1.1rem; }
+.lb-name { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--text); }
+.lb-amount {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--accent2);
+  white-space: nowrap;
+}
+.lb-empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+.lb-empty i { font-size: 2rem; display: block; margin-bottom: 0.5rem; opacity: 0.4; }
+
+/* Recent feed */
+.feed-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto; }
+.feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 0.83rem;
+}
+.feed-item.new-ping {
+  animation: newPing 0.6s ease;
+}
+@keyframes newPing {
+  0%   { border-color: var(--accent2); background: rgba(255,107,107,0.1); }
+  100% { border-color: var(--border); background: var(--bg); }
+}
+.feed-icon { color: var(--accent2); font-size: 0.85rem; margin-top: 2px; }
+.feed-name { font-weight: 700; color: var(--text); }
+.feed-amount { color: var(--accent); font-weight: 700; }
+.feed-pesan { color: var(--muted); font-style: italic; margin-top: 1px; }
+
+/* Live badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #4caf50;
+  background: rgba(76,175,80,0.12);
+  border: 1px solid rgba(76,175,80,0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  margin-left: auto;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse-dot 1.2s infinite;
+}
+
+/* Loading skeleton */
+.skel {
+  background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: skel-anim 1.2s infinite;
+  border-radius: 6px;
+  height: 14px;
+}
+@keyframes skel-anim {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+html.dark .donasi-card { background: #1a1a1a; }
+html.dark .lb-item, html.dark .feed-item { background: #111; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="donasi-wrap">
+
+  <!-- Hero -->
+  <div class="donasi-hero">
+    <h1>💖 Dukung <span>Aniryu</span></h1>
+    <p>Aniryu gratis selamanya. Tapi server butuh bayaran 😅<br>
+       Setiap donasi sekecil apapun sangat berarti buat kita!</p>
+    <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-btn">
+      <i class="fa fa-heart"></i> Donasi via Saweria
+    </a>
+  </div>
+
+  <!-- Target Progress -->
+  <div class="donasi-card">
+    <div class="donasi-card-title">
+      <i class="fa fa-bullseye"></i>
+      Target Donasi
+      <span class="live-badge" id="liveBadge" style="display:none">
+        <span class="live-dot"></span> LIVE
+      </span>
+    </div>
+    <div class="target-judul" id="targetJudul">
+      <span class="skel" style="width:60%;display:block"></span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-stats">
+      <span class="progress-terkumpul" id="terkumpul">—</span>
+      <span class="progress-target" id="targetAmount">dari —</span>
+      <span class="progress-persen" id="persenBadge">—%</span>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="donasi-card">
+    <div class="donasi-card-title">
+      <i class="fa fa-trophy"></i>
+      Top Donatur
+    </div>
+    <div class="lb-list" id="leaderboardList">
+      <!-- skeleton -->
+      <div class="lb-item" style="opacity:0.5">
+        <span class="lb-rank gold">🥇</span>
+        <span class="lb-name"><span class="skel" style="width:120px;display:inline-block"></span></span>
+        <span class="lb-amount"><span class="skel" style="width:70px;display:inline-block"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feed donasi terbaru -->
+  <div class="donasi-card">
+    <div class="donasi-card-title">
+      <i class="fa fa-clock-rotate-left"></i>
+      Donasi Terbaru
+    </div>
+    <div class="feed-list" id="feedList">
+      <div class="lb-empty">
+        <i class="fa fa-spinner fa-spin"></i>
+        Memuat...
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  const fmt = n => "Rp " + Number(n).toLocaleString("id-ID");
+  const medals = ["🥇","🥈","🥉"];
+  const rankClass = i => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "other";
+
+  // ── Load target ─────────────────────────────────────────────
+  async function loadTarget() {
+    try {
+      const r = await fetch("/api/donasi/target");
+      const d = await r.json();
+      document.getElementById("targetJudul").textContent = d.judul || "Target Donasi";
+      document.getElementById("terkumpul").textContent = fmt(d.terkumpul || 0);
+      document.getElementById("targetAmount").textContent = "dari " + fmt(d.target || 0);
+      document.getElementById("persenBadge").textContent = (d.persen || 0) + "%";
+      // delay sedikit biar animasi progress bar keliatan
+      setTimeout(() => {
+        document.getElementById("progressBar").style.width = (d.persen || 0) + "%";
+      }, 200);
+    } catch(e) {
+      document.getElementById("targetJudul").textContent = "Gagal memuat target";
+    }
+  }
+
+  // ── Load leaderboard ────────────────────────────────────────
+  async function loadLeaderboard() {
+    try {
+      const r = await fetch("/api/donasi/leaderboard");
+      const data = await r.json();
+      const el = document.getElementById("leaderboardList");
+      if (!data.length) {
+        el.innerHTML = '<div class="lb-empty"><i class="fa fa-heart-crack"></i>Belum ada donatur nih. Jadilah yang pertama!</div>';
+        return;
+      }
+      el.innerHTML = data.map((d, i) => `
+        <div class="lb-item" style="animation-delay:${i * 0.06}s">
+          <span class="lb-rank ${rankClass(i)}">${medals[i] || "#" + (i+1)}</span>
+          <span class="lb-name">${escHtml(d.donatur)}</span>
+          <span class="lb-amount">${fmt(d.total)}</span>
+        </div>
+      `).join("");
+    } catch(e) {
+      document.getElementById("leaderboardList").innerHTML =
+        '<div class="lb-empty"><i class="fa fa-circle-exclamation"></i>Gagal memuat leaderboard</div>';
+    }
+  }
+
+  // ── Load recent feed ────────────────────────────────────────
+  async function loadRecent() {
+    try {
+      const r = await fetch("/api/donasi/recent");
+      const data = await r.json();
+      renderFeed(data);
+    } catch(e) {}
+  }
+
+  function renderFeed(data) {
+    const el = document.getElementById("feedList");
+    if (!data.length) {
+      el.innerHTML = '<div class="lb-empty"><i class="fa fa-inbox"></i>Belum ada donasi</div>';
+      return;
+    }
+    el.innerHTML = data.map(d => `
+      <div class="feed-item">
+        <span class="feed-icon"><i class="fa fa-heart"></i></span>
+        <div>
+          <div><span class="feed-name">${escHtml(d.donatur)}</span>
+          &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
+          ${d.pesan ? `<div class="feed-pesan">"${escHtml(d.pesan)}"</div>` : ""}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function prependFeed(d) {
+    const el = document.getElementById("feedList");
+    // Hapus "belum ada donasi" jika ada
+    const empty = el.querySelector(".lb-empty");
+    if (empty) empty.remove();
+
+    const item = document.createElement("div");
+    item.className = "feed-item new-ping";
+    item.innerHTML = `
+      <span class="feed-icon"><i class="fa fa-heart"></i></span>
+      <div>
+        <div><span class="feed-name">${escHtml(d.donatur)}</span>
+        &nbsp;<span class="feed-amount">${fmt(d.amount)}</span></div>
+        ${d.pesan ? `<div class="feed-pesan">"${escHtml(d.pesan)}"</div>` : ""}
+      </div>
+    `;
+    el.insertBefore(item, el.firstChild);
+    // Batasi 5 item
+    while (el.children.length > 5) el.removeChild(el.lastChild);
+  }
+
+  // ── SSE real-time ───────────────────────────────────────────
+  function connectSSE() {
+    if (!window.EventSource) return; // fallback: polling
+    const es = new EventSource("/api/donasi/stream");
+    es.onopen = () => {
+      document.getElementById("liveBadge").style.display = "inline-flex";
+    };
+    es.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.event === "donasi_baru") {
+          prependFeed(data);
+          loadLeaderboard();
+          loadTarget();
+        }
+      } catch(_) {}
+    };
+    es.onerror = () => {
+      document.getElementById("liveBadge").style.display = "none";
+      es.close();
+      // reconnect 5 detik
+      setTimeout(connectSSE, 5000);
+    };
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  // ── Init ────────────────────────────────────────────────────
+  loadTarget();
+  loadLeaderboard();
+  loadRecent();
+  connectSSE();
+})();
+</script>
+{% endblock %}
