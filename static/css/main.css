@@ -186,14 +186,9 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .hero-bg {
   position: absolute; inset: 0;
   background-size: cover; background-position: center 20%;
-  filter: brightness(0.55);
   transition: filter 0.3s;
 }
-.hero-slide:hover .hero-bg { filter: brightness(0.6); }
-.hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 60%);
-}
+.hero-overlay { display: none; }
 .hero-content {
   position: absolute; bottom: 0; left: 0; right: 0;
   padding: 0.75rem 1rem 0.9rem;
