@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Anime Ongoing — Aniryu{% endblock %}
+{% block content %}
+<div class="page-head"><h1><i class="fa fa-play-circle" style="color:var(--accent)"></i> Anime Ongoing</h1><p>Anime yang sedang tayang</p></div>
+<div class="card-grid lg" id="grid"></div>
+<div class="pagination" id="pag"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+let page=1,total=1;
+async function load(p=1){
+  page=p; const grid=document.getElementById('grid');
+  renderSkels(grid,20); window.scrollTo({top:0,behavior:'smooth'});
+  const j=await(await fetch(`/api/ongoing?page=${p}`)).json();
+  const d=j?.data||{};
+  total=j?.pagination?.totalPages||1;
+  renderCards(d.animeList||[],grid);
+  renderPagination(document.getElementById('pag'),page,total,'load');
+}
+load(1);
+</script>
+{% endblock %}

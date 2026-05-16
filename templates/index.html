@@ -1,1 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Aniryu — Nonton Anime Sub Indo{% endblock %}
+{% block content %}
 
+<!-- Hero Slider -->
+<div class="hero-slider" id="heroSlider">
+  <div class="hero-track" id="heroTrack"></div>
+  <button class="hero-btn hero-prev" id="heroPrev"><i class="fa fa-chevron-left"></i></button>
+  <button class="hero-btn hero-next" id="heroNext"><i class="fa fa-chevron-right"></i></button>
+  <div class="hero-dots" id="heroDots"></div>
+</div>
+
+<div class="layout-grid">
+  <!-- Main -->
+  <div>
+    <!-- Ongoing -->
+    <div class="sec-head">
+      <div class="sec-title">Sedang Tayang</div>
+      <a href="/ongoing" class="sec-more">Lihat semua »</a>
+    </div>
+    <div class="card-grid" id="ongoingGrid"></div>
+
+    <!-- Completed -->
+    <div class="sec-head" style="margin-top:0;border-top:1px solid var(--border)">
+      <div class="sec-title">Baru Tamat</div>
+      <a href="/completed" class="sec-more">Lihat semua »</a>
+    </div>
+    <div class="card-grid" id="completedGrid"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div>
+    <div class="widget">
+      <div class="widget-head"><i class="fa fa-calendar-alt"></i> Jadwal Hari Ini</div>
+      <div class="widget-list" id="schedToday">
+        <div class="loading"><i class="fa fa-spinner fa-spin"></i></div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><i class="fa fa-check-circle"></i> Terbaru Tamat</div>
+      <div class="widget-list" id="sideCompleted">
+        <div class="loading"><i class="fa fa-spinner fa-spin"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+const DAYS = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const TODAY = DAYS[new Date().getDay()];
+
+let heroIndex = 0, heroTotal = 0, heroTimer = null;
+
+function buildHero(list) {
+  const track = document.getElementById('heroTrack');
+  const dots  = document.getElementById('heroDots');
+  heroTotal = Math.min(list.length, 8);
+  const items = list.slice(0, heroTotal);
+
+  track.innerHTML = items.map((a, i) => `
+    <div class="hero-slide" onclick="location.href='/anime/${a.animeId}'">
+      <div class="hero-bg" style="background-image:url('${a.poster}')"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">${a.status || 'Ongoing'}</div>
+        <h2 class="hero-title">${a.title}</h2>
+        <div class="hero-meta">
+          ${a.score ? `<span><i class="fas fa-star" style="color:#f5c518;font-size:0.65rem"></i> ${a.score}</span>` : ''}
+          ${a.episodes ? `<span>Ep ${a.episodes}</span>` : ''}
+          ${a.releaseDay && a.releaseDay !== 'None' ? `<span>${a.releaseDay}</span>` : ''}
+        </div>
+        <button class="hero-cta">
+          <i class="fas fa-play"></i> Tonton Sekarang
+        </button>
+      </div>
+    </div>`).join('');
+
+  dots.innerHTML = items.map((_, i) =>
+    `<span class="hero-dot ${i===0?'active':''}" onclick="goHero(${i})"></span>`
+  ).join('');
+
+  goHero(0);
+  startHeroAuto();
+}
+
+function goHero(idx) {
+  heroIndex = (idx + heroTotal) % heroTotal;
+  document.getElementById('heroTrack').style.transform = `translateX(-${heroIndex * 100}%)`;
+  document.querySelectorAll('.hero-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === heroIndex));
+}
+
+function startHeroAuto() {
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => goHero(heroIndex + 1), 4500);
+}
+
+document.getElementById('heroPrev')?.addEventListener('click', e => {
+  e.stopPropagation(); goHero(heroIndex - 1); startHeroAuto();
+});
+document.getElementById('heroNext')?.addEventListener('click', e => {
+  e.stopPropagation(); goHero(heroIndex + 1); startHeroAuto();
+});
+
+async function loadHome() {
+  const og = document.getElementById('ongoingGrid');
+  const cp = document.getElementById('completedGrid');
+  renderSkels(og, 14); renderSkels(cp, 14);
+
+  const j = await (await fetch('/api/home')).json();
+  const d = j?.data || {};
+  const ongoingList = d.ongoing?.animeList || [];
+
+  renderCards(ongoingList, og);
+  renderCards(d.completed?.animeList || [], cp);
+
+  // Build hero from ongoing
+  if (ongoingList.length) buildHero(ongoingList);
+
+  // Sidebar completed
+  const sc = document.getElementById('sideCompleted');
+  sc.innerHTML = (d.completed?.animeList||[]).slice(0,8).map(a=>`
+    <div class="widget-item" onclick="location.href='/anime/${a.animeId}'">
+      <img src="${a.poster}" onerror="this.src='/static/img/no-img.svg'" alt="${a.title}"/>
+      <div class="widget-item-info">
+        <div class="widget-item-title">${a.title}</div>
+        <div class="widget-item-meta">Ep ${a.episodes||'?'} ${a.score?`<i class="fa fa-star" style="color:#f5c518;font-size:0.65rem"></i>${a.score}`:''}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadScheduleToday() {
+  const el = document.getElementById('schedToday');
+  const j = await (await fetch('/api/schedule')).json();
+  const arr = j?.data || [];
+  const dayData = Array.isArray(arr)
+    ? arr.find(d => d.day === TODAY)
+    : Object.values(arr).find(d => d.day === TODAY);
+  const list = dayData?.anime_list || dayData?.animeList || [];
+  if (!list.length) { el.innerHTML = `<div style="color:#999;font-size:.78rem;padding:.65rem .85rem">Tidak ada jadwal hari ini.</div>`; return; }
+  el.innerHTML = list.slice(0,8).map(a=>`
+    <div class="widget-item" onclick="location.href='/anime/${a.slug||a.animeId}'">
+      <img src="${a.poster}" onerror="this.src='/static/img/no-img.svg'" alt="${a.title}"/>
+      <div class="widget-item-info">
+        <div class="widget-item-title">${a.title}</div>
+        <div class="widget-item-meta">${TODAY}</div>
+      </div>
+    </div>`).join('');
+}
+
+loadHome();
+loadScheduleToday();
+</script>
+{% endblock %}

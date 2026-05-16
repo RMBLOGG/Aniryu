@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Jadwal Tayang — Aniryu{% endblock %}
+{% block content %}
+<div class="page-head"><h1><i class="fa fa-calendar-alt" style="color:var(--accent)"></i> Jadwal Tayang Mingguan</h1><p>Anime yang tayang setiap hari</p></div>
+<div id="schedWrap"><div class="loading"><i class="fa fa-spinner fa-spin"></i></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+const DAY_ORDER = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu','Random'];
+const TODAY = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][new Date().getDay()];
+
+async function load() {
+  const wrap = document.getElementById('schedWrap');
+  const j = await (await fetch('/api/schedule')).json();
+
+  // API returns array: [{day: "Senin", anime_list: [...]}]
+  let days = j?.data || [];
+  if (!Array.isArray(days)) days = Object.values(days);
+
+  // sort by DAY_ORDER
+  days.sort((a,b) => DAY_ORDER.indexOf(a.day||a.hari) - DAY_ORDER.indexOf(b.day||b.hari));
+
+  wrap.innerHTML = `<div class="sched-grid">${days.map(d => {
+    const dayName = d.day || d.hari || '';
+    const isToday = dayName === TODAY;
+    // key: anime_list (from file) or animeList fallback
+    const list = d.anime_list || d.animeList || [];
+    const items = list.map(a => `
+      <div class="sched-item" onclick="location.href='/anime/${a.slug||a.animeId}'">
+        <img src="${a.poster}" onerror="this.src='/static/img/no-img.svg'" alt="${a.title}"/>
+        <div class="sched-item-title">${a.title}</div>
+      </div>`).join('');
+    return `<div class="sched-col">
+      <div class="sched-day ${isToday?'today':''}">${isToday?'<i class="fa fa-circle" style="color:#e53935;font-size:0.5rem;vertical-align:middle"></i> ':''} ${dayName}${isToday?' (Hari Ini)':''}</div>
+      ${items||'<div style="padding:.5rem .75rem;font-size:.72rem;color:#999">Tidak ada jadwal</div>'}
+    </div>`;
+  }).join('')}</div>`;
+}
+load();
+</script>
+{% endblock %}

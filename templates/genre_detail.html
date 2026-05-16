@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Genre — Aniryu{% endblock %}
+{% block content %}
+<div class="page-head" id="pageHead"><h1>Genre</h1></div>
+<div class="card-grid lg" id="grid"></div>
+<div class="pagination" id="pag"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+const SLUG = "{{ slug }}";
+let page = 1, total = 1;
+async function load(p=1) {
+  page = p;
+  const grid = document.getElementById('grid');
+  renderSkels(grid, 18);
+  window.scrollTo({top:0,behavior:'smooth'});
+  const j = await (await fetch(`/api/genre/${SLUG}?page=${p}`)).json();
+  const d = j?.data || {};
+  total = d.totalPage || d.pagination?.totalPages || 1;
+  document.getElementById('pageHead').innerHTML = `<h1>${d.genreTitle||SLUG}</h1><p>${d.animeList?.length||0} anime</p>`;
+  document.title = `${d.genreTitle||SLUG} — Aniryu`;
+  renderCards(d.animeList||[], grid);
+  renderPagination(document.getElementById('pag'), page, total, 'load');
+}
+load(1);
+</script>
+{% endblock %}

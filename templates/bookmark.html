@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Bookmark — Aniryu{% endblock %}
+{% block content %}
+
+<div class="sec-head" style="margin-top:0">
+  <div class="sec-title"><i class="fas fa-bookmark" style="color:var(--accent);margin-right:.35rem"></i> Bookmark Saya</div>
+  <button id="bmClearAll" class="btn btn-outline btn-sm" style="font-size:.72rem" title="Hapus semua bookmark">
+    <i class="fas fa-trash"></i> Hapus Semua
+  </button>
+</div>
+
+<div id="bmGrid" class="card-grid"></div>
+
+<div id="bmEmpty" style="display:none;text-align:center;padding:3rem 1rem;color:var(--muted)">
+  <i class="far fa-bookmark" style="font-size:2.5rem;opacity:.35;display:block;margin-bottom:.75rem"></i>
+  <p style="font-size:.9rem">Belum ada anime yang di-bookmark.</p>
+  <a href="/" class="btn btn-red" style="margin-top:1rem;display:inline-flex">
+    <i class="fa fa-home"></i>&nbsp; Ke Beranda
+  </a>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+function renderBookmarks() {
+  var list = bmGet();
+  var grid = document.getElementById('bmGrid');
+  var empty = document.getElementById('bmEmpty');
+
+  if (!list.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = list.map(function(a) {
+    return '<div class="a-card" style="position:relative">'
+      + '<div class="a-card-poster" onclick="location.href=\'/anime/' + a.animeId + '\'">'
+      + '<img src="' + a.poster + '" loading="lazy" onerror="this.src=\'/static/img/no-img.svg\'" alt="' + a.title + '"/>'
+      + (a.episodes ? '<div class="a-card-ep">Ep ' + a.episodes + '</div>' : '')
+      + '</div>'
+      + '<div class="a-card-info" onclick="location.href=\'/anime/' + a.animeId + '\'">'
+      + '<div class="a-card-title">' + a.title + '</div>'
+      + '<div class="a-card-meta">'
+      + (a.score ? '<span class="a-card-score"><i class="fas fa-star" style="color:#f5c518;font-size:.65rem"></i> ' + a.score + '</span>' : '')
+      + (a.status ? ' ' + a.status : '')
+      + '</div>'
+      + '</div>'
+      + '<button class="bm-remove-btn" data-id="' + a.animeId + '" title="Hapus bookmark">'
+      + '<i class="fas fa-xmark"></i>'
+      + '</button>'
+      + '</div>';
+  }).join('');
+
+  // bind remove buttons
+  document.querySelectorAll('.bm-remove-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var id = btn.dataset.id;
+      var arr = bmGet().filter(function(a){ return a.animeId !== id; });
+      localStorage.setItem('aniryuBookmarks', JSON.stringify(arr));
+      renderBookmarks();
+    });
+  });
+}
+
+document.getElementById('bmClearAll').addEventListener('click', function() {
+  if (confirm('Hapus semua bookmark?')) {
+    localStorage.removeItem('aniryuBookmarks');
+    renderBookmarks();
+  }
+});
+
+renderBookmarks();
+</script>
+{% endblock %}

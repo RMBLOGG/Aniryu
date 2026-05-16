@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Genre Anime — Aniryu{% endblock %}
+{% block content %}
+<div class="page-head"><h1><i class="fa fa-tags" style="color:var(--accent)"></i> Genre Anime</h1><p>Pilih genre favoritmu</p></div>
+<div class="genre-grid" id="genreGrid"><div class="loading"><i class="fa fa-spinner fa-spin"></i></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function load() {
+  const el = document.getElementById('genreGrid');
+  const j = await (await fetch('/api/genre')).json();
+  const list = j?.data?.genreList || [];
+  el.innerHTML = list.map(g=>`
+    <a href="/genre/${g.genreId}" class="genre-tag-btn">${g.title}</a>`).join('');
+}
+load();
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Cari Anime — Aniryu{% endblock %}
+{% block content %}
+<div class="page-head"><h1><i class="fa fa-search" style="color:var(--accent)"></i> Cari Anime</h1></div>
+<div style="padding:0.75rem 1rem;background:var(--white);border-bottom:1px solid var(--border)">
+  <div style="position:relative">
+    <i class="fa fa-search" style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:#999"></i>
+    <input id="q" type="text" placeholder="Ketik judul anime..." style="width:100%;padding:.6rem 1rem .6rem 2.5rem;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none" autocomplete="off"/>
+  </div>
+  <div id="status" style="font-size:.78rem;color:#999;margin-top:.5rem"></div>
+</div>
+<div class="card-grid lg" id="grid"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+const input = document.getElementById('q');
+const grid  = document.getElementById('grid');
+const status = document.getElementById('status');
+let timer = null;
+
+const p0 = new URLSearchParams(location.search).get('q');
+if (p0) { input.value = p0; search(p0); }
+
+input.addEventListener('input', ()=>{
+  clearTimeout(timer);
+  const q = input.value.trim();
+  if (!q) { grid.innerHTML=''; status.textContent=''; return; }
+  timer = setTimeout(()=>search(q), 500);
+});
+
+async function search(q) {
+  history.replaceState({},``,`/search?q=${encodeURIComponent(q)}`);
+  renderSkels(grid, 12);
+  status.textContent = `Mencari "${q}"...`;
+  const j = await (await fetch(`/api/search/${encodeURIComponent(q)}`)).json();
+  const list = j?.data?.animeList || [];
+  status.textContent = list.length ? `${list.length} hasil untuk "${q}"` : `Tidak ditemukan untuk "${q}"`;
+  renderCards(list, grid);
+}
+</script>
+{% endblock %}

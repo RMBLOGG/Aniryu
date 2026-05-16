@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Detail Anime — Aniryu{% endblock %}
+{% block content %}
+<div id="detailWrap"><div class="loading"><i class="fa fa-spinner fa-spin"></i><br/>Memuat...</div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+const SLUG = "{{ slug }}";
+
+async function load() {
+  const wrap = document.getElementById('detailWrap');
+  try {
+    const j = await (await fetch(`/api/anime/${SLUG}`)).json();
+    const d = j?.data;
+    if (!d) throw new Error('no data');
+
+    document.title = `${d.title} — Aniryu`;
+    window._detailAnime = {animeId: SLUG, title: d.title, poster: d.poster, status: d.status, episodes: d.episodes, score: d.score};
+
+    // synopsis: {paragraphs:[...]}
+    const synHtml = parseSynopsis(d.synopsis);
+
+    // genres
+    const genres = (d.genreList||[]).map(g=>
+      `<a href="/genre/${g.genreId}" class="tag blue">${g.title}</a>`).join('');
+
+    // episode list: {title, eps, date, episodeId}
+    const epList = d.episodeList || [];
+    const lastEp = epList[0];        // newest first
+    const firstEp = epList[epList.length-1];  // oldest = ep1
+
+    const epRows = epList.map(ep=>`
+      <div class="ep-row" onclick="location.href='/watch/${ep.episodeId}'">
+        <div class="ep-num">${ep.eps||'?'}</div>
+        <div class="ep-info">
+          <div class="ep-title">${ep.title}</div>
+          <div class="ep-date">${ep.date||''}</div>
+        </div>
+        <div class="ep-play"><i class="fa fa-play"></i></div>
+      </div>`).join('');
+
+    // recommended
+    const recCards = (d.recommendedAnimeList||[]).map(a=>`
+      <div class="widget-item" onclick="location.href='/anime/${a.animeId}'">
+        <img src="${a.poster}" onerror="this.src='/static/img/no-img.svg'"/>
+        <div class="widget-item-info">
+          <div class="widget-item-title">${a.title}</div>
+        </div>
+      </div>`).join('');
+
+    wrap.innerHTML = `
+      <div class="layout-grid">
+        <div>
+          <div class="detail-box">
+            <div class="detail-top">
+              <div class="detail-poster"><img src="${d.poster}" onerror="this.src='/static/img/no-img.svg'" alt="${d.title}"/></div>
+              <div class="detail-info">
+                <h1 class="detail-title">${d.title}</h1>
+                <div class="detail-jp">${d.japanese||''}</div>
+                <div class="detail-tags">
+                  <span class="tag accent">${d.status||'Unknown'}</span>
+                  <span class="tag">${d.type||''}</span>
+                  ${genres}
+                </div>
+                <div class="detail-meta">
+                  ${d.score?`<div class="meta-row"><span class="meta-key">Score</span><span class="meta-val"><i class="fa fa-star" style="color:#f5c518;font-size:0.75rem"></i> ${d.score}</span></div>`:''}
+                  ${d.episodes?`<div class="meta-row"><span class="meta-key">Episode</span><span class="meta-val">${d.episodes}</span></div>`:''}
+                  ${d.duration?`<div class="meta-row"><span class="meta-key">Durasi</span><span class="meta-val">${d.duration}</span></div>`:''}
+                  ${d.aired?`<div class="meta-row"><span class="meta-key">Rilis</span><span class="meta-val">${d.aired}</span></div>`:''}
+                  ${d.studios?`<div class="meta-row"><span class="meta-key">Studio</span><span class="meta-val">${d.studios}</span></div>`:''}
+                  ${d.producers?`<div class="meta-row"><span class="meta-key">Produser</span><span class="meta-val">${d.producers}</span></div>`:''}
+                </div>
+                <div class="detail-actions" style="margin-top:.85rem">
+                  ${lastEp?`<a href="/watch/${lastEp.episodeId}" class="btn btn-red"><i class="fa fa-play"></i> Tonton Terbaru</a>`:''}
+                  ${firstEp&&firstEp.episodeId!==lastEp?.episodeId?`<a href="/watch/${firstEp.episodeId}" class="btn btn-outline"><i class="fa fa-step-backward"></i> Dari Ep 1</a>`:''}
+                  ${bmBtnHtml({animeId:SLUG, title:d.title, poster:d.poster, status:d.status, episodes:d.episodes, score:d.score})}
+                </div>
+              </div>
+            </div>
+            <div class="synopsis-box">
+              <h3>Sinopsis</h3>
+              <div class="synopsis-text">${synHtml || '<p>Tidak ada sinopsis.</p>'}</div>
+            </div>
+          </div>
+
+          <!-- Episodes -->
+          <div class="sec-head">
+            <div class="sec-title">Daftar Episode</div>
+            <span style="font-size:.75rem;color:#999">${epList.length} episode</span>
+          </div>
+          <div class="ep-list">${epRows||'<div class="loading">Belum ada episode.</div>'}</div>
+        </div>
+
+        <!-- Sidebar -->
+        <div>
+          ${recCards ? `
+          <div class="widget">
+            <div class="widget-head">Anime Terkait</div>
+            <div class="widget-body"><div class="widget-list">${recCards}</div></div>
+          </div>` : ''}
+        </div>
+      </div>`;
+  } catch(e) {
+    wrap.innerHTML = `<div class="loading"><i class="fa fa-exclamation-triangle" style="color:var(--accent)"></i><br/>Gagal memuat. <a href="/" style="color:var(--accent)">Kembali</a></div>`;
+  }
+}
+load().then(function(){
+  // bind bookmark button after DOM is ready
+  setTimeout(function(){
+    var animeData = window._detailAnime;
+    if (animeData) bmBindBtn(animeData);
+  }, 200);
+});
+</script>
+{% endblock %}

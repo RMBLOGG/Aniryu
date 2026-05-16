@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id" id="htmlRoot">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Aniryu — Nonton Anime Sub Indo{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar Drawer -->
+<aside class="sidebar-drawer" id="sidebarDrawer">
+  <div class="sidebar-drawer-head">
+    <span class="sidebar-logo"><span class="logo-ani">Ani</span><span class="logo-ryu">ryu</span></span>
+    <button class="sidebar-close" id="sidebarClose"><i class="fa fa-times"></i></button>
+  </div>
+  <nav class="sidebar-drawer-nav">
+    <a href="/" class="sidebar-nav-item {% if request.path=='/' %}active{% endif %}">
+      <i class="fa fa-home"></i> Beranda
+    </a>
+    <a href="/ongoing" class="sidebar-nav-item {% if request.path=='/ongoing' %}active{% endif %}">
+      <i class="fa fa-play-circle"></i> Ongoing
+    </a>
+    <a href="/completed" class="sidebar-nav-item {% if request.path=='/completed' %}active{% endif %}">
+      <i class="fa fa-check-circle"></i> Completed
+    </a>
+    <a href="/schedule" class="sidebar-nav-item {% if request.path=='/schedule' %}active{% endif %}">
+      <i class="fa fa-calendar"></i> Jadwal Rilis
+    </a>
+    <a href="/genre" class="sidebar-nav-item {% if request.path=='/genre' %}active{% endif %}">
+      <i class="fa fa-tags"></i> Genre
+    </a>
+    <a href="/bookmark" class="sidebar-nav-item {% if request.path=='/bookmark' %}active{% endif %}">
+      <i class="fas fa-bookmark"></i> Bookmark
+    </a>
+    <div class="sidebar-divider"></div>
+    <a href="/faq" class="sidebar-nav-item {% if request.path=='/faq' %}active{% endif %}">
+      <i class="fas fa-circle-question"></i> FAQ
+    </a>
+    <a href="/tentang" class="sidebar-nav-item {% if request.path=='/tentang' %}active{% endif %}">
+      <i class="fas fa-circle-info"></i> Tentang Kami
+    </a>
+  </nav>
+  <div class="sidebar-drawer-footer">
+    <span><i class="fa fa-film"></i> Nonton anime gratis, kapan saja</span>
+  </div>
+</aside>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <button class="hamburger" id="hamburger"><i class="fa fa-bars"></i></button>
+    <a href="/" class="nav-logo">
+      <span class="logo-text"><span class="logo-ani">Ani</span><span class="logo-ryu">ryu</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link {% if request.path=='/' %}active{% endif %}">Beranda</a>
+      <a href="/ongoing" class="nav-link {% if request.path=='/ongoing' %}active{% endif %}">
+        <span class="dot-live"></span>Ongoing
+      </a>
+      <a href="/completed" class="nav-link {% if request.path=='/completed' %}active{% endif %}">Completed</a>
+      <a href="/schedule" class="nav-link {% if request.path=='/schedule' %}active{% endif %}">Jadwal</a>
+      <a href="/genre" class="nav-link {% if request.path=='/genre' %}active{% endif %}">Genre</a>
+    </div>
+    <div class="nav-right">
+      <a href="/bookmark" class="nav-icon-btn" title="Bookmark"><i class="fas fa-bookmark"></i></a>
+      <button class="nav-icon-btn" id="themeToggle" title="Ganti Tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+      <div class="search-wrap">
+        <i class="fa fa-search search-icon"></i>
+        <input id="globalSearch" class="search-input" type="text" placeholder="Cari anime..." autocomplete="off"/>
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-ani">Ani</span><span class="logo-ryu">ryu</span>
+      </div>
+      <p class="footer-tagline">Tempat nonton anime subtitle Indonesia terlengkap dan gratis. Update setiap hari!</p>
+      <div class="footer-social">
+        <a href="https://wa.me/6282320781747" target="_blank" class="social-btn" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://t.me/Dayysky" target="_blank" class="social-btn" title="Telegram"><i class="fab fa-telegram"></i></a>
+        <a href="https://instagram.com/rmdnhdyh10_" target="_blank" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <!-- Navigasi -->
+    <div class="footer-col">
+      <h4 class="footer-col-title">Navigasi</h4>
+      <ul>
+        <li><a href="/">Beranda</a></li>
+        <li><a href="/ongoing">Anime Ongoing</a></li>
+        <li><a href="/completed">Anime Completed</a></li>
+        <li><a href="/schedule">Jadwal Rilis</a></li>
+        <li><a href="/genre">Daftar Genre</a></li>
+      </ul>
+    </div>
+
+    <!-- Info -->
+    <div class="footer-col">
+      <h4 class="footer-col-title">Informasi</h4>
+      <ul>
+        <li><a href="#" class="popup-trigger" data-popup="tentang">Tentang Kami</a></li>
+        <li><a href="#" class="popup-trigger" data-popup="faq">FAQ</a></li>
+        <li><a href="#" class="popup-trigger" data-popup="kontak">Kontak</a></li>
+        <li><a href="#" class="popup-trigger" data-popup="kebijakan">Kebijakan Privasi</a></li>
+        <li><a href="#" class="popup-trigger" data-popup="dmca">DMCA</a></li>
+      </ul>
+    </div>
+
+    <!-- FAQ Singkat -->
+    <div class="footer-col footer-faq">
+      <h4 class="footer-col-title">Pertanyaan Umum</h4>
+      <div class="faq-item">
+        <p class="faq-q"><i class="fa fa-chevron-right"></i> Apakah Aniryu gratis?</p>
+        <p class="faq-a">Ya, 100% gratis tanpa perlu daftar akun.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q"><i class="fa fa-chevron-right"></i> Subtitle bahasa apa?</p>
+        <p class="faq-a">Semua anime tersedia dalam subtitle Indonesia.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q"><i class="fa fa-chevron-right"></i> Bisa request anime?</p>
+        <p class="faq-a">Bisa, kirim via popup Kontak di bawah.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 <strong>Aniryu</strong> — Dibuat dengan <i class="fa fa-heart" style="color:var(--accent)"></i> untuk pecinta anime Indonesia.</p>
+    <p class="footer-disc">Seluruh konten hanya untuk keperluan edukasi. Hak cipta masing-masing milik studio terkait.</p>
+  </div>
+</footer>
+
+<!-- ── Info Popups ─────────────────────────────────────────── -->
+<div class="popup-overlay" id="popupOverlay"></div>
+
+<!-- Tentang Kami -->
+<div class="popup-modal" id="popup-tentang">
+  <div class="popup-head">
+    <h3><i class="fa fa-info-circle"></i> Tentang Kami</h3>
+    <button class="popup-close"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="popup-body">
+    <p><strong>Aniryu</strong> adalah platform streaming anime subtitle Indonesia yang hadir untuk memudahkan para pecinta anime menikmati tontonan favorit mereka secara gratis, kapan saja, dan di mana saja.</p>
+    <p>Kami berkomitmen untuk selalu menghadirkan episode terbaru dengan cepat dan kualitas subtitle yang mudah dipahami. Semua konten tersedia tanpa perlu membuat akun.</p>
+    <div class="popup-highlight">
+      <div class="popup-stat"><i class="fa fa-film"></i><span>1000+ Judul</span></div>
+      <div class="popup-stat"><i class="fa fa-closed-captioning"></i><span>Sub Indo</span></div>
+      <div class="popup-stat"><i class="fa fa-bolt"></i><span>Update Cepat</span></div>
+      <div class="popup-stat"><i class="fa fa-lock-open"></i><span>Gratis</span></div>
+    </div>
+    <p class="popup-note"><i class="fa fa-exclamation-circle"></i> Aniryu dibuat untuk keperluan edukasi dan hiburan. Seluruh hak cipta konten milik studio produksi masing-masing.</p>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="popup-modal" id="popup-faq">
+  <div class="popup-head">
+    <h3><i class="fa fa-question-circle"></i> FAQ</h3>
+    <button class="popup-close"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="popup-body popup-scroll">
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Apakah Aniryu gratis?</div>
+      <div class="faq-popup-a">Ya, sepenuhnya gratis. Tidak perlu daftar akun atau bayar apapun untuk menonton.</div>
+    </div>
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Subtitle bahasa apa saja?</div>
+      <div class="faq-popup-a">Saat ini semua anime tersedia dalam subtitle Bahasa Indonesia.</div>
+    </div>
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Kapan episode baru diupdate?</div>
+      <div class="faq-popup-a">Episode baru biasanya tersedia beberapa jam setelah tayang di Jepang. Cek halaman Jadwal untuk info lengkapnya.</div>
+    </div>
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Bisa request anime?</div>
+      <div class="faq-popup-a">Bisa! Kirimkan request melalui halaman Kontak kami.</div>
+    </div>
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Video tidak bisa diputar?</div>
+      <div class="faq-popup-a">Coba refresh halaman, ganti browser, atau nonaktifkan ad-blocker. Jika masih bermasalah, hubungi kami.</div>
+    </div>
+    <div class="faq-popup-item">
+      <div class="faq-popup-q"><i class="fa fa-chevron-right"></i> Apakah ada aplikasi mobile?</div>
+      <div class="faq-popup-a">Belum tersedia, tapi website ini sudah mobile-friendly dan bisa diakses dari browser HP.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Kontak -->
+<div class="popup-modal" id="popup-kontak">
+  <div class="popup-head">
+    <h3><i class="fa fa-envelope"></i> Kontak</h3>
+    <button class="popup-close"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="popup-body">
+    <p>Punya pertanyaan, saran, laporan bug, atau ingin request anime? Hubungi kami melalui salah satu kanal berikut:</p>
+    <div class="kontak-list">
+      <a href="mailto:ramdanhdyh20@gmail.com" class="kontak-item">
+        <i class="fa fa-envelope"></i>
+        <div><strong>Email</strong><span>ramdanhdyh20@gmail.com</span></div>
+      </a>
+      <a href="https://wa.me/6282320781747" target="_blank" class="kontak-item">
+        <i class="fab fa-whatsapp"></i>
+        <div><strong>WhatsApp</strong><span>082320781747</span></div>
+      </a>
+      <a href="https://t.me/Dayysky" target="_blank" class="kontak-item">
+        <i class="fab fa-telegram"></i>
+        <div><strong>Telegram</strong><span>@Dayysky</span></div>
+      </a>
+      <a href="https://instagram.com/rmdnhdyh10_" target="_blank" class="kontak-item">
+        <i class="fab fa-instagram"></i>
+        <div><strong>Instagram</strong><span>@rmdnhdyh10_</span></div>
+      </a>
+    </div>
+    <p class="popup-note"><i class="fa fa-clock"></i> Kami biasanya membalas dalam 1×24 jam.</p>
+  </div>
+</div>
+
+<!-- Kebijakan Privasi -->
+<div class="popup-modal" id="popup-kebijakan">
+  <div class="popup-head">
+    <h3><i class="fa fa-shield-alt"></i> Kebijakan Privasi</h3>
+    <button class="popup-close"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="popup-body popup-scroll">
+    <h4>1. Data yang Dikumpulkan</h4>
+    <p>Aniryu tidak mengumpulkan data pribadi pengguna. Kami tidak memerlukan pendaftaran akun untuk mengakses layanan kami.</p>
+    <h4>2. Cookie</h4>
+    <p>Kami menggunakan cookie teknis untuk meningkatkan performa website. Cookie ini tidak mengandung informasi pribadi dan dapat dihapus kapan saja melalui pengaturan browser Anda.</p>
+    <h4>3. Layanan Pihak Ketiga</h4>
+    <p>Website ini mungkin menggunakan layanan pihak ketiga (seperti pemutar video) yang memiliki kebijakan privasi tersendiri. Kami tidak bertanggung jawab atas kebijakan privasi pihak ketiga tersebut.</p>
+    <h4>4. Keamanan</h4>
+    <p>Kami berkomitmen untuk menjaga keamanan platform ini. Namun tidak ada sistem yang 100% aman, dan kami menyarankan untuk tidak memasukkan informasi sensitif di platform manapun.</p>
+    <h4>5. Perubahan Kebijakan</h4>
+    <p>Kebijakan privasi ini dapat berubah sewaktu-waktu. Perubahan akan diumumkan di halaman ini.</p>
+    <p class="popup-note"><i class="fa fa-calendar"></i> Terakhir diperbarui: Mei 2025</p>
+  </div>
+</div>
+
+<!-- DMCA -->
+<div class="popup-modal" id="popup-dmca">
+  <div class="popup-head">
+    <h3><i class="fa fa-gavel"></i> DMCA</h3>
+    <button class="popup-close"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="popup-body popup-scroll">
+    <p>Aniryu menghormati hak kekayaan intelektual dan merespons dengan serius setiap laporan pelanggaran hak cipta (DMCA).</p>
+    <h4>Prosedur Pengajuan Laporan</h4>
+    <p>Jika Anda adalah pemilik hak cipta dan menemukan konten Anda di platform ini tanpa izin, silakan kirim laporan ke:</p>
+    <div class="kontak-item" style="margin:1rem 0">
+      <i class="fa fa-envelope"></i>
+      <div><strong>DMCA Email</strong><span>dmca@aniryu.com</span></div>
+    </div>
+    <h4>Informasi yang Diperlukan</h4>
+    <ul class="dmca-list">
+      <li><i class="fa fa-check"></i> Nama lengkap dan informasi kontak</li>
+      <li><i class="fa fa-check"></i> Deskripsi karya yang dilanggar</li>
+      <li><i class="fa fa-check"></i> URL konten yang dimaksud di platform ini</li>
+      <li><i class="fa fa-check"></i> Pernyataan bahwa Anda adalah pemilik hak cipta yang sah</li>
+    </ul>
+    <p>Kami akan menindaklanjuti laporan valid dalam waktu <strong>3×24 jam</strong> kerja.</p>
+    <p class="popup-note"><i class="fa fa-exclamation-circle"></i> Seluruh konten di Aniryu disediakan untuk keperluan edukasi semata.</p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

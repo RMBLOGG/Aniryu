@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Nonton — Aniryu{% endblock %}
+{% block content %}
+<div id="watchWrap"><div class="loading"><i class="fa fa-spinner fa-spin"></i><br/>Memuat player...</div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+const SLUG = "{{ slug }}";
+
+async function load() {
+  const wrap = document.getElementById('watchWrap');
+  try {
+    const j = await (await fetch(`/api/episode/${SLUG}`)).json();
+    const d = j?.data;
+    if (!d) throw new Error();
+
+    document.title = `${d.title||'Nonton'} — Aniryu`;
+
+    const streamUrl = d.defaultStreamingUrl || '';
+    const prev = d.hasPrevEpisode ? d.prevEpisode : null;
+    const next = d.hasNextEpisode ? d.nextEpisode : null;
+
+    // server.qualities = [{title, serverList:[{title,serverId,href}]}]
+    const qualities = d.server?.qualities || [];
+    let serverHtml = '';
+    qualities.forEach(q => {
+      const sl = q.serverList || [];
+      if (!sl.length) return;
+      serverHtml += `<div class="quality-row">
+        <div class="quality-label">${q.title}</div>
+        <div class="btn-group">${sl.map(s =>
+          `<button class="srv-btn" data-sid="${s.serverId}" onclick="loadServer('${s.serverId}',this)">${s.title.trim()}</button>`
+        ).join('')}</div>
+      </div>`;
+    });
+
+    // downloadUrl.qualities = [{title, size, urls:[{title,url}]}]
+    const dlQualities = d.downloadUrl?.qualities || [];
+    let dlHtml = '';
+    dlQualities.forEach(q => {
+      const urls = q.urls || [];
+      if (!urls.length) return;
+      dlHtml += `<div class="dl-row">
+        <div class="dl-label"><span>${q.title}</span><span class="dl-size">${q.size||''}</span></div>
+        <div class="dl-links">${urls.map(u =>
+          `<a href="${u.url}" class="dl-link" target="_blank" rel="noopener">${u.title}</a>`
+        ).join('')}</div>
+      </div>`;
+    });
+
+    // info.episodeList = [{title,eps,date,episodeId}]
+    const epList = d.info?.episodeList || [];
+    const sideEps = epList.map(ep => `
+      <div class="sidebar-ep ${ep.episodeId===SLUG?'active':''}" onclick="location.href='/watch/${ep.episodeId}'">
+        <span class="sidebar-ep-num">${ep.eps||'?'}</span>
+        <span class="sidebar-ep-title">${ep.title}</span>
+      </div>`).join('');
+
+    // anime info from info
+    const animeId = d.animeId || '';
+    const releaseTime = d.releaseTime || '';
+
+    wrap.innerHTML = `
+      <div class="layout-grid" style="align-items:start">
+        <div>
+          <div class="watch-player">
+            <iframe id="playerFrame" src="${streamUrl}" allowfullscreen allow="autoplay;encrypted-media" referrerpolicy="no-referrer"></iframe>
+          </div>
+          <div class="watch-info">
+            <div class="watch-title">${d.title||'Episode'}</div>
+            <div class="watch-meta">${releaseTime} ${d.info?.duration?'· '+d.info.duration:''} ${d.info?.type?'· '+d.info.type:''}</div>
+            <div class="watch-nav">
+              ${prev?`<a href="/watch/${prev.episodeId}" class="btn btn-outline btn-sm"><i class="fa fa-chevron-left"></i> Sebelumnya</a>`:'<span></span>'}
+              ${animeId?`<a href="/anime/${animeId}" class="btn btn-outline btn-sm"><i class="fa fa-list"></i> Semua Ep</a>`:''}
+              ${next?`<a href="/watch/${next.episodeId}" class="btn btn-red btn-sm">Selanjutnya <i class="fa fa-chevron-right"></i></a>`:''}
+            </div>
+            <!-- genre tags -->
+            <div>${(d.info?.genreList||[]).map(g=>`<a href="/genre/${g.genreId}" class="tag blue" style="margin:.1rem">${g.title}</a>`).join('')}</div>
+          </div>
+
+          ${serverHtml?`<div class="server-box"><h3>Pilih Server Streaming</h3>${serverHtml}</div>`:''}
+          ${dlHtml?`<div class="dl-box"><h3><i class="fa fa-download" style="color:var(--accent);margin-right:.3rem"></i>Download</h3>${dlHtml}</div>`:''}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar-box">
+          <div class="sidebar-head">Daftar Episode</div>
+          <div class="sidebar-eps">${sideEps||'<div class="loading">Kosong.</div>'}</div>
+        </div>
+      </div>`;
+
+    // scroll active
+    setTimeout(()=>{
+      document.querySelector('.sidebar-ep.active')?.scrollIntoView({block:'center',behavior:'smooth'});
+    },300);
+  } catch {
+    wrap.innerHTML = `<div class="loading"><i class="fa fa-exclamation-triangle" style="color:var(--accent)"></i><br/>Gagal memuat episode. <a href="/" style="color:var(--accent)">Kembali</a></div>`;
+  }
+}
+
+async function loadServer(sid, btn) {
+  document.querySelectorAll('.srv-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const orig = btn.textContent;
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+  try {
+    const j = await (await fetch(`/api/server/${sid}`)).json();
+    const url = j?.data?.url || j?.data?.streamingUrl || j?.data?.src;
+    if (url) document.getElementById('playerFrame').src = url;
+    else btn.textContent = orig;
+  } catch { btn.textContent = orig; }
+}
+load();
+</script>
+{% endblock %}
