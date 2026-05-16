@@ -11,7 +11,7 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 SUPABASE_SERVICE_KEY = "GANTI_SERVICE_ROLE_KEY_SUPABASE_KAMU"
 
 # Saweria webhook secret — set di Vercel env: SAWERIA_SECRET
-SAWERIA_SECRET = "5cdOZ1Rnr3z18I8a"
+SAWERIA_SECRET = "GANTI_SAWERIA_SECRET_KAMU"
 
 # SSE broadcast queues
 _sse_clients = []
@@ -187,15 +187,6 @@ def api_recent():
 # ════════════════════════════════════════════════════════════════════════════
 @app.route("/api/saweria/webhook", methods=["POST"])
 def saweria_webhook():
-    # Verifikasi signature jika SAWERIA_SECRET di-set
-    if SAWERIA_SECRET:
-        sig_header = request.headers.get("X-Saweria-Signature", "")
-        expected = hmac.new(
-            SAWERIA_SECRET.encode(), request.data, hashlib.sha256
-        ).hexdigest()
-        if not hmac.compare_digest(sig_header, expected):
-            return jsonify({"error": "invalid signature"}), 403
-
     payload = request.get_json(silent=True) or {}
 
     # Saweria payload: donatur_name / donor_name, amount, message
