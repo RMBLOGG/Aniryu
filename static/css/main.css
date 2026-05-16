@@ -172,7 +172,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 /* ── Hero Slider ────────────────────────────────────────────── */
 .hero-slider {
   position: relative; width: 100%; overflow: hidden;
-  background: #111; aspect-ratio: 16/9;
+  background: #111; aspect-ratio: 16/5; max-height: 300px;
 
 }
 .hero-track {
@@ -514,7 +514,6 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   .detail-meta { grid-template-columns: 1fr; }
   .watch-layout { display: block; }
   .hero-slider { aspect-ratio: 16/9; }
-  .hero-title { font-size: 0.88rem; }
   .hero-content { padding: 0.6rem 0.85rem 0.75rem; }
   .footer-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.75rem 1.25rem 1rem; }
 }
