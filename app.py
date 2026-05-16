@@ -8,7 +8,7 @@ BASE_URL = "https://www.sankavollerei.com"
 # ── Supabase config ──────────────────────────────────────────────────────────
 SUPABASE_URL      = "https://mafnnqttvkdgqqxczqyt.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZm5ucXR0dmtkZ3FxeGN6cXl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NzQyMDEsImV4cCI6MjA4NzQ1MDIwMX0.YRh1oWVKnn4tyQNRbcPhlSyvr7V_1LseWN7VjcImb-Y"
-SUPABASE_SERVICE_KEY = "GANTI_SERVICE_ROLE_KEY_SUPABASE_KAMU"
+SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZm5ucXR0dmtkZ3FxeGN6cXl0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTg3NDIwMSwiZXhwIjoyMDg3NDUwMjAxfQ.2I06TOtfOJErlZPzuWdOFofII_agGgzZzKClqLo6EMg"
 
 # Saweria webhook secret — set di Vercel env: SAWERIA_SECRET
 SAWERIA_SECRET = "GANTI_SAWERIA_SECRET_KAMU"
