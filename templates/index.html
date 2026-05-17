@@ -1,5 +1,90 @@
 {% extends "base.html" %}
 {% block title %}Aniryu — Nonton Anime Sub Indo{% endblock %}
+{% block head %}
+<style>
+/* ── Donasi Mini Widget ─────────────────────────────────────── */
+.donasi-mini {
+  margin: 0.75rem 1rem 0;
+  background: linear-gradient(135deg, #1a0505 0%, #2a0808 100%);
+  border: 1px solid rgba(229,57,53,0.25);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  overflow: hidden;
+}
+.donasi-mini-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+}
+.donasi-mini-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.donasi-mini-title i { color: var(--accent2); font-size: 0.78rem; }
+.donasi-mini-link {
+  font-size: 0.72rem;
+  color: var(--accent2);
+  text-decoration: none;
+  font-weight: 700;
+}
+.donasi-mini-progress-wrap {
+  background: rgba(255,255,255,0.1);
+  border-radius: 50px;
+  height: 7px;
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+}
+.donasi-mini-bar {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  width: 0%;
+  transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.donasi-mini-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.donasi-mini-terkumpul { font-weight: 800; color: var(--accent2); }
+.donasi-mini-target { color: rgba(255,255,255,0.45); flex: 1; }
+.donasi-mini-persen {
+  background: rgba(229,57,53,0.15);
+  color: var(--accent);
+  padding: 0.1rem 0.45rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.68rem;
+}
+.donasi-mini-lb {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 0.6rem;
+}
+.mini-lb-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 0;
+  font-size: 0.78rem;
+}
+.mini-lb-rank { font-size: 0.88rem; min-width: 22px; text-align: center; }
+.mini-lb-name { flex: 1; color: rgba(255,255,255,0.8); font-weight: 600; }
+.mini-lb-amount { color: var(--accent2); font-weight: 800; font-size: 0.75rem; }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <!-- Hero Slider -->
@@ -13,6 +98,23 @@
 <div class="layout-grid">
   <!-- Main -->
   <div>
+    <!-- Donasi Mini Widget -->
+    <div class="donasi-mini" id="donasiMini" style="display:none">
+      <div class="donasi-mini-top">
+        <div class="donasi-mini-title"><i class="fa fa-heart"></i> Dukung Aniryu</div>
+        <a href="/donasi" class="donasi-mini-link">Selengkapnya »</a>
+      </div>
+      <div class="donasi-mini-progress-wrap">
+        <div class="donasi-mini-bar" id="miniBar"></div>
+      </div>
+      <div class="donasi-mini-stats">
+        <span class="donasi-mini-terkumpul" id="miniTerkumpul">—</span>
+        <span class="donasi-mini-target" id="miniTarget">dari —</span>
+        <span class="donasi-mini-persen" id="miniPersen">—%</span>
+      </div>
+      <div class="donasi-mini-lb" id="miniLb"></div>
+    </div>
+
     <!-- Ongoing -->
     <div class="sec-head">
       <div class="sec-title">Sedang Tayang</div>
@@ -150,7 +252,39 @@ async function loadScheduleToday() {
     </div>`).join('');
 }
 
+async function loadDonasiMini() {
+  try {
+    const fmt = n => "Rp " + Number(n).toLocaleString("id-ID");
+    const medals = ["🥇","🥈","🥉"];
+
+    const [tRes, lRes] = await Promise.all([
+      fetch('/api/donasi/target').then(r=>r.json()),
+      fetch('/api/donasi/leaderboard').then(r=>r.json())
+    ]);
+
+    document.getElementById('miniTerkumpul').textContent = fmt(tRes.terkumpul||0);
+    document.getElementById('miniTarget').textContent = 'dari ' + fmt(tRes.target||0);
+    document.getElementById('miniPersen').textContent = (tRes.persen||0) + '%';
+    setTimeout(()=>{ document.getElementById('miniBar').style.width = (tRes.persen||0)+'%'; }, 200);
+
+    const lb = document.getElementById('miniLb');
+    if (lRes.length) {
+      lb.innerHTML = lRes.slice(0,3).map((d,i) => `
+        <div class="mini-lb-item">
+          <span class="mini-lb-rank">${medals[i]||'#'+(i+1)}</span>
+          <span class="mini-lb-name">${String(d.donatur).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>
+          <span class="mini-lb-amount">${fmt(d.total)}</span>
+        </div>`).join('');
+    } else {
+      lb.innerHTML = '<div style="color:rgba(255,255,255,0.35);font-size:.75rem;padding:.3rem 0">Belum ada donatur. Jadilah yang pertama!</div>';
+    }
+
+    document.getElementById('donasiMini').style.display = 'block';
+  } catch(e) {}
+}
+
 loadHome();
 loadScheduleToday();
+loadDonasiMini();
 </script>
 {% endblock %}
