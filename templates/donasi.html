@@ -7,41 +7,44 @@
 .donasi-wrap {
   max-width: 680px;
   margin: 0 auto;
-  padding: 2rem 1rem 3rem;
+  padding: 0 1rem 3rem;
   overflow-x: hidden;
   box-sizing: border-box;
 }
 
 /* Hero — full bleed banner */
 .donasi-hero {
-  background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0505 100%);
+  background: linear-gradient(160deg, #0d0d0d 0%, #1c0505 60%, #2a0808 100%);
   margin: 0 -1rem 2.5rem;
-  padding: 2.5rem 1.5rem;
-  overflow: hidden;
+  padding: 3rem 1.5rem 2.5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  border-bottom: 1px solid rgba(229,57,53,0.25);
 }
-.donasi-hero::after {
+.donasi-hero::before {
   content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  top: -60px; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(229,57,53,0.18) 0%, transparent 70%);
+  pointer-events: none;
 }
 .donasi-hero h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.55rem;
   font-weight: 900;
   color: #fff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.3px;
 }
 .donasi-hero h1 span { color: var(--accent2); }
 .donasi-hero p {
-  color: rgba(255,255,255,0.55);
-  font-size: 0.88rem;
-  max-width: 420px;
-  margin: 0 auto 1.5rem;
-  line-height: 1.65;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  max-width: 380px;
+  margin: 0 auto 1.6rem;
+  line-height: 1.7;
 }
 .donasi-btn {
   display: inline-flex;
@@ -239,7 +242,8 @@
   <!-- Hero -->
   <div class="donasi-hero">
     <h1>💖 Dukung <span>Aniryu</span></h1>
-    <p>Dukung Aniryu biar bisa terus online dan update! Setiap donasi sekecil apapun sangat berarti buat kami 🙏</p>
+    <p>Dukung Aniryu biar bisa terus online dan update!<br>
+       Setiap donasi sekecil apapun sangat berarti buat kami 🙏</p>
     <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-btn">
       <i class="fa fa-heart"></i> Donasi via Saweria
     </a>
