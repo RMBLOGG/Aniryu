@@ -89,6 +89,22 @@
 .mini-lb-rank { font-size: 0.88rem; min-width: 22px; text-align: center; }
 .mini-lb-name { flex: 1; color: var(--text); font-weight: 600; }
 .mini-lb-amount { color: var(--accent); font-weight: 800; font-size: 0.75rem; }
+.donasi-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 1.1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.donasi-mini-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.donasi-mini-btn i { font-size: 0.72rem; }
 </style>
 {% endblock %}
 
@@ -117,6 +133,7 @@
     <span class="donasi-mini-persen" id="miniPersen">—%</span>
   </div>
   <div class="donasi-mini-lb" id="miniLb"></div>
+  <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-mini-btn"><i class="fa fa-heart"></i> Donasi via Saweria</a>
 </div>
 
 <div class="layout-grid">
