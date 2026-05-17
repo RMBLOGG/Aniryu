@@ -4,11 +4,9 @@
 <style>
 /* ── Donasi Mini Widget ─────────────────────────────────────── */
 .donasi-mini {
-  margin: 0.75rem 1rem 0;
   background: linear-gradient(135deg, #1a0505 0%, #2a0808 100%);
-  border: 1px solid rgba(229,57,53,0.25);
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
+  border-bottom: 1px solid rgba(229,57,53,0.2);
+  padding: 0.85rem 1rem;
   overflow: hidden;
 }
 .donasi-mini-top {
@@ -95,26 +93,26 @@
   <div class="hero-dots" id="heroDots"></div>
 </div>
 
+<!-- Donasi Mini Widget -->
+<div class="donasi-mini" id="donasiMini" style="display:none">
+  <div class="donasi-mini-top">
+    <div class="donasi-mini-title"><i class="fa fa-heart"></i> Dukung Aniryu</div>
+    <a href="/donasi" class="donasi-mini-link">Selengkapnya »</a>
+  </div>
+  <div class="donasi-mini-progress-wrap">
+    <div class="donasi-mini-bar" id="miniBar"></div>
+  </div>
+  <div class="donasi-mini-stats">
+    <span class="donasi-mini-terkumpul" id="miniTerkumpul">—</span>
+    <span class="donasi-mini-target" id="miniTarget">dari —</span>
+    <span class="donasi-mini-persen" id="miniPersen">—%</span>
+  </div>
+  <div class="donasi-mini-lb" id="miniLb"></div>
+</div>
+
 <div class="layout-grid">
   <!-- Main -->
   <div>
-    <!-- Donasi Mini Widget -->
-    <div class="donasi-mini" id="donasiMini" style="display:none">
-      <div class="donasi-mini-top">
-        <div class="donasi-mini-title"><i class="fa fa-heart"></i> Dukung Aniryu</div>
-        <a href="/donasi" class="donasi-mini-link">Selengkapnya »</a>
-      </div>
-      <div class="donasi-mini-progress-wrap">
-        <div class="donasi-mini-bar" id="miniBar"></div>
-      </div>
-      <div class="donasi-mini-stats">
-        <span class="donasi-mini-terkumpul" id="miniTerkumpul">—</span>
-        <span class="donasi-mini-target" id="miniTarget">dari —</span>
-        <span class="donasi-mini-persen" id="miniPersen">—%</span>
-      </div>
-      <div class="donasi-mini-lb" id="miniLb"></div>
-    </div>
-
     <!-- Ongoing -->
     <div class="sec-head">
       <div class="sec-title">Sedang Tayang</div>
