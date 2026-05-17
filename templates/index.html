@@ -331,6 +331,10 @@ async function loadDonasiMini() {
     }
 
     document.getElementById('donasiMini').style.display = 'block';
+    // default terbuka
+    document.getElementById('donasiBody').classList.add('open');
+    document.getElementById('donasiChevron').classList.add('open');
+    setTimeout(()=>{ document.getElementById('miniBar').style.width = (window._donasiPersen||0)+'%'; }, 200);
   } catch(e) {}
 }
 
