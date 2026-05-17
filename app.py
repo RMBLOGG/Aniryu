@@ -11,7 +11,7 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZm5ucXR0dmtkZ3FxeGN6cXl0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTg3NDIwMSwiZXhwIjoyMDg3NDUwMjAxfQ.2I06TOtfOJErlZPzuWdOFofII_agGgzZzKClqLo6EMg"
 
 # Saweria webhook secret — set di Vercel env: SAWERIA_SECRET
-SAWERIA_SECRET = "GANTI_SAWERIA_SECRET_KAMU"
+SAWERIA_SECRET = ""
 
 # SSE broadcast queues
 _sse_clients = []
