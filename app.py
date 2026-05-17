@@ -189,14 +189,10 @@ def api_recent():
 def saweria_webhook():
     payload = request.get_json(silent=True) or {}
 
-    # Log payload untuk debug
-    import sys
-    print("SAWERIA PAYLOAD:", json.dumps(payload), file=sys.stderr)
-
-    # Saweria payload: donatur_name / donor_name, amount, message
-    donatur = payload.get("donatur_name") or payload.get("donor_name") or payload.get("name") or "Anonim"
+    # Saweria payload: donator_name, amount_raw
+    donatur = payload.get("donator_name") or payload.get("donatur_name") or payload.get("donor_name") or "Anonim"
     try:
-        amount = int(str(payload.get("amount", "0")).replace(".", "").replace(",", ""))
+        amount = int(payload.get("amount_raw") or payload.get("amount") or 0)
     except (ValueError, TypeError):
         amount = 0
     pesan = payload.get("message") or payload.get("pesan") or ""
