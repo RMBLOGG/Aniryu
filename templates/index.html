@@ -105,6 +105,23 @@
 }
 .donasi-mini-btn:hover { background: var(--accent2); transform: translateY(-1px); }
 .donasi-mini-btn i { font-size: 0.72rem; }
+.donasi-mini-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0;
+}
+.donasi-mini-body.open {
+  max-height: 500px;
+  padding: 0.55rem 0 0;
+}
+.donasi-mini-toggle {
+  color: var(--muted);
+  font-size: 0.75rem;
+  transition: transform 0.3s;
+  margin-left: 0.4rem;
+}
+.donasi-mini-toggle.open { transform: rotate(180deg); }
 </style>
 {% endblock %}
 
@@ -120,20 +137,22 @@
 
 <!-- Donasi Mini Widget -->
 <div class="donasi-mini" id="donasiMini" style="display:none">
-  <div class="donasi-mini-top">
-    <div class="donasi-mini-title"><i class="fa fa-heart"></i> Dukung Aniryu</div>
-    <a href="/donasi" class="donasi-mini-link">Selengkapnya »</a>
+  <div class="donasi-mini-top" id="donasiToggle" style="cursor:pointer" onclick="toggleDonasiMini()">
+    <div class="donasi-mini-title"><i class="fa fa-heart"></i> Dukung Aniryu <i class="fa fa-chevron-down donasi-mini-toggle" id="donasiChevron"></i></div>
+    <a href="/donasi" class="donasi-mini-link" onclick="event.stopPropagation()">Selengkapnya »</a>
   </div>
-  <div class="donasi-mini-progress-wrap">
-    <div class="donasi-mini-bar" id="miniBar"></div>
+  <div class="donasi-mini-body" id="donasiBody">
+    <div class="donasi-mini-progress-wrap">
+      <div class="donasi-mini-bar" id="miniBar"></div>
+    </div>
+    <div class="donasi-mini-stats">
+      <span class="donasi-mini-terkumpul" id="miniTerkumpul">—</span>
+      <span class="donasi-mini-target" id="miniTarget">dari —</span>
+      <span class="donasi-mini-persen" id="miniPersen">—%</span>
+    </div>
+    <div class="donasi-mini-lb" id="miniLb"></div>
+    <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-mini-btn"><i class="fa fa-heart"></i> Donasi via Saweria</a>
   </div>
-  <div class="donasi-mini-stats">
-    <span class="donasi-mini-terkumpul" id="miniTerkumpul">—</span>
-    <span class="donasi-mini-target" id="miniTarget">dari —</span>
-    <span class="donasi-mini-persen" id="miniPersen">—%</span>
-  </div>
-  <div class="donasi-mini-lb" id="miniLb"></div>
-  <a href="https://saweria.co/Dayynime" target="_blank" class="donasi-mini-btn"><i class="fa fa-heart"></i> Donasi via Saweria</a>
 </div>
 
 <div class="layout-grid">
@@ -276,6 +295,14 @@ async function loadScheduleToday() {
     </div>`).join('');
 }
 
+function toggleDonasiMini() {
+  const body = document.getElementById('donasiBody');
+  const chevron = document.getElementById('donasiChevron');
+  const isOpen = body.classList.toggle('open');
+  chevron.classList.toggle('open', isOpen);
+  if (isOpen) setTimeout(() => { document.getElementById('miniBar').style.width = (window._donasiPersen||0)+'%'; }, 50);
+}
+
 async function loadDonasiMini() {
   try {
     const fmt = n => "Rp " + Number(n).toLocaleString("id-ID");
@@ -289,7 +316,7 @@ async function loadDonasiMini() {
     document.getElementById('miniTerkumpul').textContent = fmt(tRes.terkumpul||0);
     document.getElementById('miniTarget').textContent = 'dari ' + fmt(tRes.target||0);
     document.getElementById('miniPersen').textContent = (tRes.persen||0) + '%';
-    setTimeout(()=>{ document.getElementById('miniBar').style.width = (tRes.persen||0)+'%'; }, 200);
+    window._donasiPersen = tRes.persen||0;
 
     const lb = document.getElementById('miniLb');
     if (lRes.length) {
