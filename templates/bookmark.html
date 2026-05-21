@@ -9,7 +9,7 @@
   </button>
 </div>
 
-<div id="bmGrid" class="bm-list"></div>
+<div id="bmGrid" class="card-grid"></div>
 
 <div id="bmEmpty" style="display:none;text-align:center;padding:3rem 1rem;color:var(--muted)">
   <i class="far fa-bookmark" style="font-size:2.5rem;opacity:.35;display:block;margin-bottom:.75rem"></i>
@@ -35,19 +35,21 @@ function renderBookmarks() {
   empty.style.display = 'none';
 
   grid.innerHTML = list.map(function(a) {
-    return '<div class="bm-item" onclick="location.href=\'/anime/' + a.animeId + '\'" style="cursor:pointer">'\
-      + '<img src="' + a.poster + '" loading="lazy" onerror="this.src=\'/static/img/no-img.svg\'" alt="' + a.title + '"/>'\
-      + '<div class="bm-item-info">'\
-      + '<div class="bm-item-title">' + a.title + '</div>'\
-      + '<div class="bm-item-meta">'\
-      + (a.status ? '<span>' + a.status + '</span>' : '')\
-      + (a.episodes ? '<span>Ep ' + a.episodes + '</span>' : '')\
-      + (a.score ? '<span><i class="fas fa-star" style="color:#f5c518;font-size:.65rem"></i> ' + a.score + '</span>' : '')\
-      + '</div>'\
-      + '</div>'\
-      + '<button class="bm-remove-btn" data-id="' + a.animeId + '" title="Hapus bookmark" onclick="event.stopPropagation()">'\
-      + '<i class="fas fa-xmark"></i>'\
-      + '</button>'\
+    return '<div class="a-card" style="position:relative">'
+      + '<div class="a-card-poster" onclick="location.href=\'/anime/' + a.animeId + '\'">'
+      + '<img src="' + a.poster + '" loading="lazy" onerror="this.src=\'/static/img/no-img.svg\'" alt="' + a.title + '"/>'
+      + (a.episodes ? '<div class="a-card-ep">Ep ' + a.episodes + '</div>' : '')
+      + '</div>'
+      + '<div class="a-card-info" onclick="location.href=\'/anime/' + a.animeId + '\'">'
+      + '<div class="a-card-title">' + a.title + '</div>'
+      + '<div class="a-card-meta">'
+      + (a.score ? '<span class="a-card-score"><i class="fas fa-star" style="color:#f5c518;font-size:.65rem"></i> ' + a.score + '</span>' : '')
+      + (a.status ? ' ' + a.status : '')
+      + '</div>'
+      + '</div>'
+      + '<button class="bm-remove-btn" data-id="' + a.animeId + '" title="Hapus bookmark">'
+      + '<i class="fas fa-xmark"></i>'
+      + '</button>'
       + '</div>';
   }).join('');
 
